@@ -22,7 +22,7 @@ public class PreprocessJS {
 	 * except of passing it as-is, the encoding is only used to ensure
 	 * no data is lost with InputStreamReader and OutputStreamReader.
 	 */
-	private static String CHARSET = "ISO-8859-15";
+	private static final String CHARSET = "ISO-8859-15";
 	
 	private static BufferedWriter out = null;
 	
