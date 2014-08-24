@@ -85,12 +85,7 @@ public class PreprocessJS {
 	}
 	
 	private static CharSequence process(InputStreamReader in, String cwd) throws IOException {
-		// read entire file into string buffer
-		StringBuffer sbuff = new StringBuffer(1024);
-		char[] buff = new char[1024];
-		int n;
-		while (-1 != (n = in.read(buff)))
-			sbuff.append(buff, 0, n);
+		CharSequence sbuff = readStream(in);
 		
 		StringBuffer afterInclude = new StringBuffer();
 		
@@ -127,6 +122,24 @@ public class PreprocessJS {
 			System.exit(1);
 		}
 		return in;
+	}
+	
+	/**
+	 * Read entire stream into CharSequence.
+	 * 
+	 * @param in input stream
+	 * @return result
+	 * @throws IOException
+	 */
+	private static CharSequence readStream(InputStreamReader in) throws IOException {
+		
+		StringBuffer sbuff = new StringBuffer(1024);
+		char[] buff = new char[1024];
+		int n;
+		while (-1 != (n = in.read(buff)))
+			sbuff.append(buff, 0, n);
+		
+		return sbuff;
 	}
 	
 	
