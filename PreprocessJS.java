@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PreprocessJS {
 
@@ -56,9 +58,9 @@ public class PreprocessJS {
 
 		if (file == null) {
 			// use stdin and cwd
-			process(new InputStreamReader(System.in, CHARSET), System.getProperty("user.dir"));
+			out.append(process(new InputStreamReader(System.in, CHARSET), System.getProperty("user.dir")));
 		} else {
-			process(file);
+			out.append(process(file));
 		}
 		
 		try {
@@ -69,15 +71,20 @@ public class PreprocessJS {
 		}
 	}
 	
-	private static void process(String fileName) throws IOException {
+	private static CharSequence process(String fileName) throws IOException {
 		File f = new File(fileName);
-		String cwd = f.getParent();
-		InputStreamReader in = openFile(f);
-		process(in, cwd);
-		in.close();
+		return process(f);
 	}
 	
-	private static void process(InputStreamReader in, String cwd) throws IOException {
+	private static CharSequence process(File file) throws IOException {
+		String cwd = file.getParent();
+		InputStreamReader in = openFile(file);
+		CharSequence s = process(in, cwd);
+		in.close();
+		return s;
+	}
+	
+	private static CharSequence process(InputStreamReader in, String cwd) throws IOException {
 		// read entire file into string buffer
 		StringBuffer sbuff = new StringBuffer(1024);
 		char[] buff = new char[1024];
@@ -85,12 +92,21 @@ public class PreprocessJS {
 		while (-1 != (n = in.read(buff)))
 			sbuff.append(buff, 0, n);
 		
-		// TODO
-		// find matching preprocessing tags
-		// and write them to out
+		StringBuffer afterInclude = new StringBuffer();
 		
-		out.append(sbuff);
+		// find matching include tags
+		Pattern p = Pattern.compile("\"include\\s(\\S+?)\";");
+		Matcher m = p.matcher(sbuff);
+		int prev = 0;
+		while(m.find()) {
+			afterInclude.append(sbuff.subSequence(prev, m.start()));
+			afterInclude.append(process(new File(cwd, m.group(1))));
+			prev = m.end();
+		}
+		afterInclude.append(sbuff.subSequence(prev, sbuff.length()));
 		
+		//System.err.println(String.format("CWD: %s", cwd));
+		return afterInclude;
 	}
 	
 	/**
