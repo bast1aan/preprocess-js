@@ -43,10 +43,10 @@ staticly to variables. For example:
  "read path/to/template.html into template";
 ```
 
-will result in the contents of path/to/template.html wil be placed
-into the variable template.
+will result in the contents of `path/to/template.html` be placed
+into the variable `template`.
 
-Considering the contents of path/to/template.html is:
+Considering the contents of `path/to/template.html` is:
 
 ```html
  <div>
