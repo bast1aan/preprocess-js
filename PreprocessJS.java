@@ -100,8 +100,30 @@ public class PreprocessJS {
 		}
 		afterInclude.append(sbuff.subSequence(prev, sbuff.length()));
 		
+		StringBuffer afterRead = new StringBuffer();
+		
+		// find matching read tags
+		p = Pattern.compile("\"read\\s+(\\S+?)\\s+into\\s+(\\S+?)\";");
+		m = p.matcher(afterInclude);
+		prev = 0;
+		while (m.find()) {
+			afterRead.append(afterInclude.subSequence(prev, m.start()));
+			String file = m.group(1);
+			String var = m.group(2);
+			String contents = 
+					readStream(openFile(new File(cwd, file)))
+						.toString()
+						.replaceAll("(\\r|\\n|\\r\\n)+", "\\\\$1")
+						.replaceAll("\"", "\\\\\"")
+					;
+			afterRead.append(String.format("%s = \"%s\";", var, contents));
+			prev = m.end();
+		}
+		afterRead.append(afterInclude.subSequence(prev, afterInclude.length()));
+		
 		//System.err.println(String.format("CWD: %s", cwd));
-		return afterInclude;
+		
+		return afterRead;
 	}
 	
 	/**
