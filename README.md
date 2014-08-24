@@ -72,5 +72,7 @@ to the source file that is processed.
 So with nested includes, the path for the child is always relative to the 
 directory of the parent file.
 
-
+Note: if you feed the main input file with stdin (using < or | with command line)
+instead of the -i option, then the current working directory will be used instead of
+some parent directory of the input file.
 
