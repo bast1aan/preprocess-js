@@ -95,7 +95,7 @@ public class PreprocessJS {
 		StringBuffer afterInclude = new StringBuffer();
 		
 		// find matching include tags
-		Pattern p = Pattern.compile("\"include\\s(\\S+?)\";");
+		Pattern p = Pattern.compile("\"include\\s(\\S+?)\\s*\";");
 		Matcher m = p.matcher(sbuff);
 		int prev = 0;
 		while(m.find()) {
