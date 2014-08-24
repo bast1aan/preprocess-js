@@ -23,10 +23,12 @@ including
 
 Lines in main.js like:
 
-`"include path/to/source.js";`
+```js
+"include path/to/source.js";
+```
 
-will be processed, the line will be replace by the contents of the
-file path/to/source.js.
+will be processed, the line will be replaced by the contents of the
+file `path/to/source.js`.
 
 Note that the path/to/source.js will again be processed in the same way.
 
@@ -36,25 +38,31 @@ reading into variables
 Besides including files, also contents of files can be written
 staticly to variables. For example:
 
+```js
  var template;
  "read path/to/template.html into template";
+```
 
 will result in the contents of path/to/template.html wil be placed
 into the variable template.
 
 Considering the contents of path/to/template.html is:
 
+```html
  <div>
     <p class="intro">Some text</p>
  </div>
+```
 
-The end result for these part will be:
+The end result for this part will be:
 
+```js
  var template;
  template = "<div>\
     <p class=\"intro\">Some text</p>\
  </div>\
  ";
+```
 
 Include paths
 -------------
